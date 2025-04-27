@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class DestinationController extends Controller
 {
+    public function index() {
+        $destination = Destination::all();
+        return response()->json($destination, 200);
+    }
     public function store(StoreDestinationRequest $request) {
         $validated = $request->validated();
         $destination = Destination::create($validated);

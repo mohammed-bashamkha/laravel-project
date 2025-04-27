@@ -10,3 +10,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/destination',[DestinationController::class,'store']);
+Route::get('/destination_show_all',[DestinationController::class,'index']);
