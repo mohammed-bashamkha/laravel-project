@@ -34,6 +34,6 @@ class AgencyController extends Controller
     public function destroy($id) {
         $agency = Agency::findOrFail($id);
         $agency->delete();
-        return response()->json('Destination Deleted Seccssfuly', 200);
+        return response()->json('Agency Deleted Seccssfuly', 200);
     }
 }
