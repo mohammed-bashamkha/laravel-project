@@ -11,3 +11,6 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/destination',[DestinationController::class,'store']);
 Route::get('/destination_show_all',[DestinationController::class,'index']);
+Route::put('/destination_update/{id}',[DestinationController::class,'update']);
+Route::get('/destination_show/{id}',[DestinationController::class,'show']);
+Route::delete('/destination_delete/{id}',[DestinationController::class,'destroy']);
