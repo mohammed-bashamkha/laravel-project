@@ -23,7 +23,8 @@ class StoreDestinationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'description' => 'required|string'
+            'description' => 'required|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2084'
         ];
     }
 }

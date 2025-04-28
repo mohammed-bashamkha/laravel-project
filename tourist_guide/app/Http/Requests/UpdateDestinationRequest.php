@@ -23,7 +23,8 @@ class UpdateDestinationRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:100',
-            'description' => 'sometimes|string'
+            'description' => 'sometimes|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2084'
         ];
     }
 }
