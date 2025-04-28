@@ -17,14 +17,14 @@ class DestinationController extends Controller
     public function store(StoreDestinationRequest $request) {
         $validated = $request->validated();
         $destination = Destination::create($validated);
-        return response()->json('Destination Added Seccssfuly', 200);
+        return response()->json(['Destination Added Seccssfuly',$destination], 200);
     }
 
     public function update(UpdateDestinationRequest $request,$id) {
         $destination = Destination::findOrFail($id);
         $validated = $request->all();
         $destination ->update($validated);
-        return response()->json(['Destination Added Seccssfuly',$destination], 200);
+        return response()->json(['Destination Updated Seccssfuly',$destination], 200);
     }
 
     public function show($id) {
@@ -33,6 +33,10 @@ class DestinationController extends Controller
     }
 
     public function destroy($id) {
+        if($destination =! Destination::find($id))
+        {
+            return response()->json(['message' =>'Destination was Deleted'], 200);
+        }
         $destination = Destination::findOrFail($id);
         $destination->delete();
         return response()->json('Destination Deleted Seccssfuly', 200);

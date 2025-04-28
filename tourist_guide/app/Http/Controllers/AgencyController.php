@@ -32,7 +32,11 @@ class AgencyController extends Controller
     }
 
     public function destroy($id) {
-        $agency = Agency::findOrFail($id);
+        if($agency =! Agency::find($id))
+        {
+            return response()->json(['message' =>'Agency was Deleted'], 200);
+        }
+        $agency = Agency::find($id);
         $agency->delete();
         return response()->json('Agency Deleted Seccssfuly', 200);
     }
