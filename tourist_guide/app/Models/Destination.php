@@ -15,4 +15,9 @@ class Destination extends Model
     public function agencies() {
         return $this->belongsToMany(Agency::class,'destination_agency');
     }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
 }

@@ -1,3 +1,4 @@
+@extends('layouts.app')
 <div class="container">
     <h1>{{ $destination->name }}</h1>
 

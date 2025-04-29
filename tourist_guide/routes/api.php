@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 
 // destination
 Route::get('/destination_show/{id}',[DestinationController::class,'show']);
-Route::get('/destination_show_all',[DestinationController::class,'index'])->middleware('auth:sanctum');
+Route::get('/destination_show_all',[DestinationController::class,'index']);
 
 
 Route::post('/destination',[DestinationController::class,'store']);

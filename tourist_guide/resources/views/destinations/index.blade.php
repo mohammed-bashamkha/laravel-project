@@ -1,4 +1,4 @@
-{{-- @extends('layouts.app') --}}
+@extends('layouts.app')
 <div class="container">
     <h1 class="text-center">الوجهات السياحية</h1>
 

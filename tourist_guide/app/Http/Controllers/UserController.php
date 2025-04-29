@@ -20,10 +20,11 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-        return response()->json([
-            'message' => 'User Registered Succssfully.',
-            'User' => $user
-        ], 201);
+        // return response()->json([
+        //     'message' => 'User Registered Succssfully.',
+        //     'User' => $user
+        // ], 201);
+        return redirect('/login')->with('message', 'User Registered Succssfully.');
     }
 
     public function login(Request $request) {
@@ -35,11 +36,12 @@ class UserController extends Controller
         {
             $user = User::where('email',$request->email)->firstOrFail();
             $token = $user->createToken('auth_login')->plainTextToken;
-            return response()->json([
-                'message' => 'User Login Succssfully.',
-                'User' => $user,
-                'Token' => $token
-            ], 201);
+            // return response()->json([
+            //     'message' => 'User Login Succssfully.',
+            //     'User' => $user,
+            //     'Token' => $token
+            // ], 201);
+            return redirect('/')->with('message', 'User Login Succssfully.')->with('token', $token);
         }
         else {
             return response()->json([

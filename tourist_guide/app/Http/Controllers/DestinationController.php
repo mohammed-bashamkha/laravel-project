@@ -75,7 +75,8 @@ class DestinationController extends Controller
 public function viewDestinations()
 {
     $destinations = Destination::with('images')->get();
-    return view('index', compact('destinations'));
+    return view('destinations.index
+', compact('destinations'));
 }
 
 // دالة عرض تفاصيل وجهة معينة في صفحة Blade
