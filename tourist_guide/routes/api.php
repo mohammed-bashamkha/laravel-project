@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\UserController;
 use App\Models\Destination;
 use App\Models\DestinationImage;
 use Illuminate\Http\Request;
@@ -29,3 +30,11 @@ Route::put('/agency_update/{id}',[AgencyController::class,'update']);
 Route::delete('/agency_delete/{id}',[AgencyController::class,'destroy']);
 
 Route::delete('/destination_image/{id}',[DestinationImage::class,'DeleteImage']);
+
+
+// users
+Route::post('/register',[UserController::class,'register']);
+
+Route::post('/login',[UserController::class,'login']);
+
+Route::post('/logout',[UserController::class,'logout'])->middleware('auth:sanctum');

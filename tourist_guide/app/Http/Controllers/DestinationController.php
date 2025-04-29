@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class DestinationController extends Controller
 {
     public function index() {
-        $destination = Destination::with('images')->all();
+        $destination = Destination::with('images')->get();
         return response()->json($destination, 200);
     }
     public function store(StoreDestinationRequest $request) {
@@ -70,4 +70,20 @@ class DestinationController extends Controller
         $destination->delete();
         return response()->json('Destination Deleted Seccssfuly', 200);
     }
+
+    // دالة عرض كل الوجهات في صفحة Blade
+public function viewDestinations()
+{
+    $destinations = Destination::with('images')->get();
+    return view('index', compact('destinations'));
+}
+
+// دالة عرض تفاصيل وجهة معينة في صفحة Blade
+public function viewDestination($id)
+{
+    $destination = Destination::with(['images', 'agencies'])->findOrFail($id);
+    return view('destinations.show', compact('destination'));
+}
+
+
 }
