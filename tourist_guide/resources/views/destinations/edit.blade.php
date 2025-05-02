@@ -15,6 +15,16 @@
             <label for="description" class="form-label">الوصف</label>
             <textarea class="form-control" name="description" id="description" required>{{ $destination->description }}</textarea>
         </div>
+        
+        <div class="mb-3">
+            <label for="agencies" class="form-label">الوكالات المرتبطة</label>
+            <select name="agencies[]" id="agencies" class="form-control" multiple>
+                @foreach($agencies as $agency)
+                    <option value="{{ $agency->id }}">{{ $agency->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="mb-3">
             <label for="images" class="form-label">إضافة صور جديدة</label>
             <input type="file" class="form-control" name="images[]" id="images" multiple>

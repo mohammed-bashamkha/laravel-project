@@ -18,6 +18,14 @@
             <label for="images" class="form-label">الصور</label>
             <input type="file" class="form-control" name="images[]" id="images" multiple>
         </div>
+        <div class="mb-3">
+            <label for="agencies" class="form-label">الوكالات المرتبطة</label>
+            <select name="agencies[]" id="agencies" class="form-control" multiple>
+                @foreach($agencies as $agency)
+                    <option value="{{ $agency->id }}">{{ $agency->name }}</option>
+                @endforeach
+            </select>
+        </div>
         <button type="submit" class="btn btn-success">إضافة</button>
         <a href="{{ route('destinations.index') }}" class="btn btn-secondary">رجوع</a>
     </form>

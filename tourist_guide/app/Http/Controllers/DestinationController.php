@@ -18,6 +18,11 @@ class DestinationController extends Controller
     public function store(StoreDestinationRequest $request) {
         $validated = $request->validated();
         $destination = Destination::create($validated);
+
+        if ($request->has('agencies')) {
+            $destination->agencies()->sync($request->agencies);
+        }
+
         if($request->hasFile('images')) {
             foreach($request->file('images') as $image) {
                 $path = $image->store('destinations' , 'public');
@@ -28,17 +33,25 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        return response()->json([
-            'Message'=> 'Destination Added Seccssfuly with Images',
-            'Destination' => $destination->load('images'),
-            'Information' => $destination
-        ], 201);
+        // return response()->json([
+        //     'Message'=> 'Destination Added Seccssfuly with Images',
+        //     'Destination' => $destination->load('images'),
+        //     'Information' => $destination
+        // ], 201);
+        return redirect()->route('destinations.index');
+    }
+
+    public function create() {
+        $agencies = \App\Models\Agency::all();
+        return view('destinations.create', compact('agencies'));
+
     }
 
     public function update(UpdateDestinationRequest $request,$id) {
-        $destination = Destination::findOrFail($id);
+        $destination = Destination::find($id);
         $validated = $request->all();
         $destination ->update($validated);
+        $destination->agencies()->sync($request->agencies ?? []);
         if($request->hasFile('images')) {
             foreach($request->file('images') as $image) {
                 $path = $image->store('destinations' , 'public');
@@ -49,12 +62,20 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        return response()->json([
-            'Message'=> 'Destination Added Seccssfuly with Images',
-            'Destination' => $destination->load('images'),
-            'Information' => $destination
-        ], 200);
+        // return response()->json([
+        //     'Message'=> 'Destination Updated Seccssfuly',
+        //     'Destination' => $destination->load('images'),
+        //     'Information' => $destination
+        // ], 200);
+        return redirect()->route('destinations.update');
     }
+    public function edit($id) {
+        $destination = Destination::with('agencies')->findOrFail($id);
+        $agencies = \App\Models\Agency::all(); // جلب جميع الوكالات لاستخدامها في الاختيار
+        return view('destinations.edit', compact('destination', 'agencies'));
+
+    }
+
 
     public function show($id) {
         $destination = Destination::with(['images','agencies'])->findOrFail($id);
@@ -68,15 +89,15 @@ class DestinationController extends Controller
         }
         $destination = Destination::findOrFail($id);
         $destination->delete();
-        return response()->json('Destination Deleted Seccssfuly', 200);
+        // return response()->json('Destination Deleted Seccssfuly', 200);
+        return redirect()->route('destinations.index');
     }
 
     // دالة عرض كل الوجهات في صفحة Blade
 public function viewDestinations()
 {
     $destinations = Destination::with('images')->get();
-    return view('destinations.index
-', compact('destinations'));
+    return view('destinations.index', compact('destinations'));
 }
 
 // دالة عرض تفاصيل وجهة معينة في صفحة Blade
