@@ -29,7 +29,7 @@
     {{-- شريط التنقل --}}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">الدليل السياحي</a>
+            <a class="navbar-brand" href="{{ url('/') }}">الرئيسية</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -39,7 +39,13 @@
                         <a class="nav-link" href="{{ route('destinations.index') }}">الوجهات</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('destinations.create') }}">إضافة وجهة</a>
+                        <a class="nav-link" href="{{ route('destinations.my_index') }}">وجهاتي</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('agencies.index') }}">وكالات السفر</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('agencies.my_index') }}">وكالاتي</a>
                     </li>
                 </ul>
             </div>

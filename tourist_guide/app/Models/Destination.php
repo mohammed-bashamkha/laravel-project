@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Destination extends Model
 {
-    protected $fillable = ['name','description'];
+    protected $fillable = ['user_id','name','description'];
 
     public function images() {
         return $this->hasMany(DestinationImage::class);

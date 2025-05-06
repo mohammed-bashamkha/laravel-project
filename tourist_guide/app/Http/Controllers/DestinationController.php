@@ -8,16 +8,21 @@ use App\Models\Destination;
 use App\Models\DestinationImage;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DestinationController extends Controller
 {
     public function index() {
-        $destination = Destination::with('images')->get();
-        return response()->json($destination, 200);
+        $destinations = Auth::user()->destinations;
+        // $destinations = Destination::with('images')->get();
+        // return response()->json($destination, 200);
+        return view('destinations.index', compact('destinations'));
     }
     public function store(StoreDestinationRequest $request) {
-        $validated = $request->validated();
-        $destination = Destination::create($validated);
+        $user_id = Auth::user()->id;
+        $validatedData = $request->validated();
+        $validatedData['user_id']=$user_id;
+        $destination = Destination::create($validatedData);
 
         if ($request->has('agencies')) {
             $destination->agencies()->sync($request->agencies);
@@ -48,7 +53,13 @@ class DestinationController extends Controller
     }
 
     public function update(UpdateDestinationRequest $request,$id) {
+        $user_id = Auth::user()->id;
         $destination = Destination::find($id);
+
+        if($destination->user_id != $user_id) {
+            // return redirect()->route('destinations.index')->with('error',);
+            return back()->withErrors('لاتمتلك التصريح لتعديل هذه الوجهة');
+        }
         $validated = $request->all();
         $destination ->update($validated);
         $destination->agencies()->sync($request->agencies ?? []);
@@ -70,8 +81,8 @@ class DestinationController extends Controller
         return redirect()->route('destinations.update');
     }
     public function edit($id) {
-        $destination = Destination::with('agencies')->findOrFail($id);
-        $agencies = \App\Models\Agency::all(); // جلب جميع الوكالات لاستخدامها في الاختيار
+        $destination = Destination::with('agencies')->find($id);
+        $agencies = \App\Models\Agency::all();
         return view('destinations.edit', compact('destination', 'agencies'));
 
     }
@@ -83,11 +94,12 @@ class DestinationController extends Controller
     }
 
     public function destroy($id) {
-        if($destination =! Destination::find($id))
-        {
-            return response()->json(['message' =>'Destination was Deleted'], 200);
-        }
+        $user_id = Auth::user()->id;
         $destination = Destination::findOrFail($id);
+        if($destination->user_id != $user_id) {
+            // return redirect()->route('destinations.index')->with('error',);
+            return back()->withErrors('لاتمتلك التصريح لحذف هذه الوجهة');
+        }
         $destination->delete();
         // return response()->json('Destination Deleted Seccssfuly', 200);
         return redirect()->route('destinations.index');

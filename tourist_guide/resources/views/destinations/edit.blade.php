@@ -1,6 +1,14 @@
 {{-- resources/views/destinations/edit.blade.php --}}
 @extends('layouts.app')
 
+@if (session('success'))
+    <h4 style="color: green">{{session('success')}}</h4>
+    @endif
+
+    @if ($errors->any())
+    <h4 style="color: red">{{implode(',', $errors->all())}}</h4>
+    @endif
+
 @section('content')
 <div class="container">
     <h1>تعديل وجهة</h1>
@@ -15,7 +23,7 @@
             <label for="description" class="form-label">الوصف</label>
             <textarea class="form-control" name="description" id="description" required>{{ $destination->description }}</textarea>
         </div>
-        
+
         <div class="mb-3">
             <label for="agencies" class="form-label">الوكالات المرتبطة</label>
             <select name="agencies[]" id="agencies" class="form-control" multiple>

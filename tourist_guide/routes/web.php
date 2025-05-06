@@ -27,18 +27,17 @@ Route::get('/login',function () {return view('login');});
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
 
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-// Route::get('/agencies/create', [AgencyController::class, 'create'])->name('agencies.create');
-// Route::post('/agencies', [AgencyController::class, 'store'])->name('agencies.store');
-Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware(['auth:sanctum','AdminMiddleware']);
+Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show')->middleware(['auth:sanctum','AdminMiddleware']);
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware(['auth:sanctum','AdminMiddleware']);
+Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update')->middleware(['auth:sanctum','AdminMiddleware']);
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy')->middleware(['auth:sanctum','AdminMiddleware']);
 
 
 
 
 Route::get('/destinations', [DestinationController::class, 'viewDestinations'])->name('destinations.index')->middleware('auth:sanctum');
+Route::get('/user_destinations', [DestinationController::class, 'index'])->name('destinations.my_index')->middleware('auth:sanctum');
 Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create')->middleware(['auth:sanctum','AdminMiddleware']);
 Route::post('/destinations', [DestinationController::class, 'store'])->name('destinations.store')->middleware(['auth:sanctum','AdminMiddleware']);
 Route::get('/destinations/{id}', [DestinationController::class, 'viewDestination'])->name('destinations.show')->middleware('auth:sanctum');
@@ -51,6 +50,7 @@ Route::delete('/destinations/{id}', [DestinationController::class, 'destroy'])->
 
 
 Route::get('/agencies', [AgencyController::class, 'viewAgencies'])->name('agencies.index');
+Route::get('/user_agencies', [AgencyController::class, 'index'])->name('agencies.my_index');
 Route::get('/agencies/create', [AgencyController::class, 'create'])->name('agencies.create');
 Route::post('/agencies', [AgencyController::class, 'store'])->name('agencies.store');
 Route::get('/agencies/{id}', [AgencyController::class, 'viewAgency'])->name('agencies.show');

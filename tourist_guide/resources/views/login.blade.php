@@ -1,8 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
     <link rel="stylesheet" href="{{ asset('css/register_login.css') }}">
 <head>
     <title>تسجيل الدخول</title>
+@if (session('success'))
+<h4 style="color: green">{{session('success')}}</h4>
+@endif
+
+@if ($errors->any())
+<h4 style="color: red">{{implode(',', $errors->all())}}</h4>
+@endif
 </head>
 <body>
     <form method="POST" action="{{ route('login') }}">

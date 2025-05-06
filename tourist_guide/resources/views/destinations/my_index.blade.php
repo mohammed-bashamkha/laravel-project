@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">الوجهات السياحية</h1>
+    <h1 class="mb-4">وجهاتي</h1>
     <a href="{{ route('destinations.create') }}" class="btn btn-success mb-3">إضافة وجهة جديدة</a>
     <div class="row">
         @foreach($destinations as $destination)
@@ -37,5 +37,3 @@
     </div>
 </div>
 @endsection
-
-

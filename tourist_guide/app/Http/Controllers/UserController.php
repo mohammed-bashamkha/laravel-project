@@ -62,6 +62,9 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email|max:100',
             'password' => 'required|string'
         ]);
+        if(User::where('email',$request->email)->first()) {
+            return back()->withErrors("The User With Email : ( $request->email ) is Already Registerd");
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -71,7 +74,7 @@ class UserController extends Controller
         //     'message' => 'User Registered Succssfully.',
         //     'User' => $user
         // ], 201);
-        return redirect('/login')->with('message', 'User Registered Succssfully.');
+        return redirect('/login')->with('success', 'User Registered Succssfully.');
     }
 
     public function login(Request $request) {
@@ -81,6 +84,7 @@ class UserController extends Controller
         ]);
         if(Auth::attempt($request->only('email','password')))
         {
+            $request->session()->regenerate();
             $user = User::where('email',$request->email)->first();
             $token = $user->createToken('auth_login')->plainTextToken;
             // return response()->json([
@@ -88,16 +92,20 @@ class UserController extends Controller
             //     'User' => $user,
             //     'Token' => $token
             // ], 201);
-            return redirect('/')->with('message', 'User Login Succssfully.')->with('token', $token);
+            return redirect('/')->with('success', 'User Login Succssfully.')->with('token', $token);
         }
         else {
-            return response()->json([
-                'message' => 'invalid user or password',
-            ], 401);
+            // return response()->json([
+            //     'message' => 'invalid user or password',
+            // ], 401);
+            return back()->withErrors(['login' => 'invalid user or password']);
         }
     }
     public function logout(Request $request) {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'User LogOut Succssfully.']);
+        // return response()->json(['message' => 'User LogOut Succssfully.']);
+        return redirect('/login');
     }
 }

@@ -57,13 +57,21 @@
         <a href="#">حول</a>
         <a href="#">الخدمات</a>
         <a href="#">اتصل بنا</a>
+        <form action="{{route('logout')}}" method="POST">
+            @csrf
+            <button type="submit">تسجيل الخروج</button>
+         </form>
     </nav>
     <div class="container">
         <h2>اكتشف أفضل الأماكن السياحية</h2>
         <p>نحن هنا لمساعدتك في العثور على أفضل الوجهات السياحية.</p>
     </div>
+    <div>
+        <h1 style="text-align: center">مرحبًا , {{Auth::check() ? Auth::user()->name : 'ضيف'}}</h1>
+            <h3 style="text-align: center">تم تسجيل الدخول بنجاح</h3>
+    </div>
     <footer>
-        <p>جميع الحقوق محفوظة &copy; 2023</p>
+        <p>جميع الحقوق محفوظة &copy; 2025</p>
     </footer>
 </body>
 </html>

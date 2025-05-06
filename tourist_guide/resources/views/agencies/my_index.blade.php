@@ -23,7 +23,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">وكالات السفريات</h1>
+    <h1 class="mb-4">وكالاتي</h1>
     <a href="{{ route('agencies.create') }}" class="btn btn-success mb-3">إضافة وكالة جديدة</a>
     <div class="row">
         @foreach($agencies as $agency)
@@ -31,7 +31,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">{{ $agency->name }}</h5>
-                        <p class="card-text"><a href="{{ $agency->url }}">{{ $agency->url }}</a></p>
+                        <p class="card-text">{{ $agency->url }}</p>
                         <a href="{{ route('agencies.show', $agency->id) }}" class="btn btn-primary">عرض التفاصيل</a>
                         <a href="{{ route('agencies.edit', $agency->id) }}" class="btn btn-warning">تعديل</a>
                         <form action="{{ route('agencies.destroy', $agency->id) }}" method="POST" style="display:inline-block;">
@@ -46,5 +46,3 @@
     </div>
 </div>
 @endsection
-
-

@@ -15,18 +15,7 @@
             <label for="url" class="form-label">رابط صفحة الوكالة</label>
             <input type='url' class="form-control" name="url" id="url" value="{{$agency->url}}" required></ع>
         </div>
-
-        <div class="mb-3">
-            <label for="agencies" class="form-label">الوكالات المرتبطة</label>
-            <select name="agencies[]" id="agencies" class="form-control" multiple>
-                @foreach($agencies as $agency)
-                    <option value="{{ $agency->id }}" {{ $destination->agencies->contains($agency->id) ? 'selected' : '' }}>
-                        {{ $agency->name }}
-                    </option>
-                @endforeach
-            </select>
         </div>
-        
         <button type="submit" class="btn btn-warning">تحديث</button>
         <a href="{{ route('agencies.index') }}" class="btn btn-secondary">رجوع</a>
     </form>

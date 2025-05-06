@@ -18,6 +18,10 @@
             <label for="images" class="form-label">الصور</label>
             <input type="file" class="form-control" name="images[]" id="images" multiple>
         </div>
+        {{-- <div class="mb-3">
+            <label for="user_id" class="form-label">رقم المستخدم</label>
+            <input type="hidden" class="form-control" name="user_id" id="user_id" value="{{Auth::user()->id}}" required>
+        </div> --}}
         <div class="mb-3">
             <label for="agencies" class="form-label">الوكالات المرتبطة</label>
             <select name="agencies[]" id="agencies" class="form-control" multiple>
