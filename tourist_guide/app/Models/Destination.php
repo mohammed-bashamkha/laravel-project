@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Destination extends Model
 {
-    protected $fillable = ['user_id','name','description'];
+    protected $fillable = ['user_id','name','description','country','fragment'];
 
     public function images() {
         return $this->hasMany(DestinationImage::class);
@@ -20,4 +20,7 @@ class Destination extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function favoriteByUser() {
+        return $this->belongsToMany(User::class,'favorite_destinations');
+    }
 }

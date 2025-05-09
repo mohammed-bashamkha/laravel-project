@@ -5,60 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الدليل السياحي</title>
 
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" integrity="sha384-ENjdO4Dr2bkBIFxQpeo7F9gU3c1uTOnxM3zv3Z4pFNez3URy9Bv1WTRiQZ5n3M5Q" crossorigin="anonymous">
+    {{-- Bootstrap RTL --}}
+    <link href="{{ asset('css/bootstrap.rtl.min.css') }}" rel="stylesheet">
 
-    {{-- خط عربي (اختياري) --}}
+    {{-- Google Fonts - Cairo --}}
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
-    {{-- ملف CSS مخصص --}}
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
+    {{-- تنسيق عام --}}
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f8f9fa;
         }
-        .navbar {
-            margin-bottom: 30px;
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .nav-link {
+            font-size: 16px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1140px;
         }
     </style>
 </head>
 <body>
 
-    {{-- شريط التنقل --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    {{-- Navbar --}}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">الرئيسية</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('destinations.index') }}">الوجهات</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('destinations.my_index') }}">وجهاتي</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('agencies.index') }}">وكالات السفر</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('agencies.my_index') }}">وكالاتي</a>
-                    </li>
-                </ul>
-            </div>
+            <a class="navbar-brand" href="{{ url('/') }}">🌍 الدليل السياحي</a>
+
+            {{-- Navbar المخصص من الصفحة --}}
+            @hasSection('custom-navbar')
+                @yield('custom-navbar')
+            @else
+                {{-- Navbar الافتراضي --}}
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ms-auto">
+                        @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{{route('users.index')}}" role="button" data-bs-toggle="dropdown-menu">
+                                {{ auth()->user()->name }}
+                            </a>
+                            <li class="nav-item">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button class="nav-link">تسجيل الخروج</button>
+                                </form>
+                            </li>
+                        </li>
+                    @else
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">تسجيل الدخول</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">إنشاء حساب</a></li>
+                    @endauth
+                    </ul>
+                </div>
+            @endif
         </div>
     </nav>
 
-    {{-- محتوى الصفحة --}}
-    <main class="py-4">
+    {{-- Flash Messages --}}
+    <div class="container mt-3">
+        @if (session('success'))
+            <div class="alert alert-success text-center">{{ session('success') }}</div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger text-center">{{ session('error') }}</div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger text-center">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
+
+    {{-- المحتوى الرئيسي --}}
+    <main class="container py-4">
         @yield('content')
     </main>
 
+    {{-- Footer --}}
+    <footer class="mt-auto">
+        <div class="container">
+            <small>&copy; {{ date('Y') }} جميع الحقوق محفوظة - مشروع Laravel دليل سياحي</small>
+        </div>
+    </footer>
+
     {{-- Bootstrap JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+4+nqPzF6nXSKk63CnP5t4ZOkvfY/" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    @yield('scripts')
+
 
 </body>
 </html>

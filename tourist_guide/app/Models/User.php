@@ -56,4 +56,8 @@ class User extends Authenticatable
         return $this->hasMany(Agency::class);
     }
 
+    public function favoriteDestinations() {
+        return $this->belongsToMany(Destination::class,'favorite_destinations');
+    }
+
 }

@@ -1,4 +1,3 @@
-{{-- resources/views/destinations/index.blade.php --}}
 @extends('layouts.app')
 
 @section('custom-navbar')
@@ -41,39 +40,50 @@
     </div>
 @endsection
 
-@if (session('success'))
-    <h4 style="color: green">{{session('success')}}</h4>
-    @endif
-
-    @if ($errors->any())
-    <h4 style="color: red">{{implode(',', $errors->all())}}</h4>
-    @endif
-
 @section('content')
-<div class="container">
-    <h1 class="mb-4">وجهاتي</h1>
-    <a href="{{ route('destinations.create') }}" class="btn btn-success mb-3">إضافة وجهة جديدة</a>
-    <div class="row">
-        @foreach($destinations as $destination)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
+<div class="container py-5">
+    <h2 class="mb-4 text-center">الوجهات المفضلة لديك ❤️</h2>
+
+    <div class="row" id="favorites-container">
+        @forelse($favorites as $destination)
+            <div class="col-md-4 mb-4" id="fav-{{ $destination->id }}">
+                <div class="card h-100 shadow-sm">
                     @if($destination->images->first())
-                        <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" class="card-img-top" alt="صورة وجهة" width="200" height="200">
+                        <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" class="card-img-top" alt="صورة" style="height: 200px; object-fit: cover;">
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $destination->name }}</h5>
-                        <p class="card-text">{{ $destination->fragment }}</p>
-                        <a href="{{ route('destinations.show', $destination->id) }}" class="btn btn-primary">عرض التفاصيل</a>
-                        <a href="{{ route('destinations.edit', $destination->id) }}" class="btn btn-warning">تعديل</a>
-                        <form action="{{ route('destinations.destroy', $destination->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
-                        </form>
+                        <p class="card-text text-muted">{{ $destination->country }}</p>
+                        <a href="{{ route('destinations.show', $destination->id) }}" class="btn btn-outline-primary btn-sm">عرض التفاصيل</a>
+                        <button class="btn btn-danger btn-sm float-end remove-favorite" data-id="{{ $destination->id }}">🗑 إزالة</button>
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <p class="text-center text-muted">لا توجد وجهات مفضلة حتى الآن.</p>
+        @endforelse
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.querySelectorAll('.remove-favorite').forEach(button => {
+    button.addEventListener('click', function () {
+        const id = this.dataset.id;
+
+        fetch(`/favorites/remove/${id}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+          .then(data => {
+              document.getElementById('fav-' + id).remove();
+          }).catch(error => alert('فشل الحذف من المفضلة'));
+    });
+});
+</script>
 @endsection

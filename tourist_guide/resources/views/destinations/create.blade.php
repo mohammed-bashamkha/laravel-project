@@ -11,6 +11,14 @@
             <input type="text" class="form-control" name="name" id="name" required>
         </div>
         <div class="mb-3">
+            <label for="country" class="form-label">الدولة</label>
+            <input type="text" class="form-control" name="country" id="country" required>
+        </div>
+        <div class="mb-3">
+            <label for="fragment" class="form-label">نبذة</label>
+            <textarea class="form-control" name="fragment" id="fragment" required></textarea>
+        </div>
+        <div class="mb-3">
             <label for="description" class="form-label">الوصف</label>
             <textarea class="form-control" name="description" id="description" required></textarea>
         </div>
@@ -18,10 +26,6 @@
             <label for="images" class="form-label">الصور</label>
             <input type="file" class="form-control" name="images[]" id="images" multiple>
         </div>
-        {{-- <div class="mb-3">
-            <label for="user_id" class="form-label">رقم المستخدم</label>
-            <input type="hidden" class="form-control" name="user_id" id="user_id" value="{{Auth::user()->id}}" required>
-        </div> --}}
         <div class="mb-3">
             <label for="agencies" class="form-label">الوكالات المرتبطة</label>
             <select name="agencies[]" id="agencies" class="form-control" multiple>

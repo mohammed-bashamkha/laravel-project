@@ -38,3 +38,7 @@ Route::post('/register',[UserController::class,'register']);
 Route::post('/login',[UserController::class,'login']);
 
 Route::post('/logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+
+Route::post('destination/{id}/favorite',[DestinationController::class,'addToFavorites']);
+Route::delete('destination/{id}/favorite',[DestinationController::class,'removeFromFavorites']);
+Route::get('destination/favorites',[DestinationController::class,'getFavorites']);

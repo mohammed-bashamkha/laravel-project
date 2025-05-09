@@ -23,6 +23,8 @@ class StoreDestinationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
+            'country' => 'required|string|max:20',
+            'fragment' => 'required|string',
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4084'
         ];

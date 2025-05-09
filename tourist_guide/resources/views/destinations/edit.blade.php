@@ -20,6 +20,14 @@
             <input type="text" class="form-control" name="name" id="name" value="{{ $destination->name }}" required>
         </div>
         <div class="mb-3">
+            <label for="country" class="form-label">الدولة</label>
+            <input type="text" class="form-control" name="country" id="country" value="{{ $destination->country }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="fragment" class="form-label">نبذة</label>
+            <textarea class="form-control" name="fragment" id="fragment" required>{{ $destination->fragment }}</textarea>
+        </div>
+        <div class="mb-3">
             <label for="description" class="form-label">الوصف</label>
             <textarea class="form-control" name="description" id="description" required>{{ $destination->description }}</textarea>
         </div>

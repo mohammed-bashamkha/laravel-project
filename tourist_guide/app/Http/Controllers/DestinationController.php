@@ -14,8 +14,6 @@ class DestinationController extends Controller
 {
     public function index() {
         $destinations = Auth::user()->destinations;
-        // $destinations = Destination::with('images')->get();
-        // return response()->json($destination, 200);
         return view('destinations.index', compact('destinations'));
     }
     public function store(StoreDestinationRequest $request) {
@@ -38,11 +36,6 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        // return response()->json([
-        //     'Message'=> 'Destination Added Seccssfuly with Images',
-        //     'Destination' => $destination->load('images'),
-        //     'Information' => $destination
-        // ], 201);
         return redirect()->route('destinations.index');
     }
 
@@ -73,11 +66,6 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        // return response()->json([
-        //     'Message'=> 'Destination Updated Seccssfuly',
-        //     'Destination' => $destination->load('images'),
-        //     'Information' => $destination
-        // ], 200);
         return redirect()->route('destinations.update');
     }
     public function edit($id) {
@@ -110,6 +98,7 @@ public function viewDestinations()
 {
     $destinations = Destination::with('images')->get();
     return view('destinations.index', compact('destinations'));
+    // return view('website.destinations_view' ,compact('destinations'));
 }
 
 // دالة عرض تفاصيل وجهة معينة في صفحة Blade
@@ -119,5 +108,20 @@ public function viewDestination($id)
     return view('destinations.show', compact('destination'));
 }
 
+public function addToFavorites($destination_id) {
+    Destination::findOrFail($destination_id);
+    Auth::user()->favoriteDestinations()->syncWithoutDetaching($destination_id);
+    return response()->json(['message'=>'Add To Favorite Successfuly'], 200);
+}
+public function removeFromFavorites($destination_id) {
+    Destination::findOrFail($destination_id);
+    Auth::user()->favoriteDestinations()->detach($destination_id);
+    return response()->json(['message'=>'Removed From Favorite Successfuly'], 200);
+}
+public function viewFavorites()
+{
+    $favorites = Auth::user()->favoriteDestinations()->with('images')->get();
+    return view('destinations.favorites', compact('favorites'));
+}
 
 }
