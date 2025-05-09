@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\UserController;
+use App\Models\Destination;
 
 // Route::get('/destinations',function() {return view('destinations.index');});
 // Route::get('/destinations', [DestinationController::class, 'viewDestinations'])->name('destinations.index');
@@ -81,11 +83,15 @@ Route::middleware(['auth', 'AdminMiddleware'])->group(function () {
     // مسارات إدارية أخرى إن وجدت (مستخدمين، وجهات...)
 });
 
-use App\Models\Destination;
+
 
 Route::get('/', function () {
     $destinations = Destination::with('images')->take(6)->get();
     return view('welcome', compact('destinations'));
 })->name('welcome');
+
+Route::post('/comments/{destination}', [CommentController::class, 'store'])->name('comments.store')->middleware('auth');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('auth');
+
 
 

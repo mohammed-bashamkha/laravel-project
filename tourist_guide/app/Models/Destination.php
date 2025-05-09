@@ -23,4 +23,9 @@ class Destination extends Model
     public function favoriteByUser() {
         return $this->belongsToMany(User::class,'favorite_destinations');
     }
+
+    public function comments() {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
 }
