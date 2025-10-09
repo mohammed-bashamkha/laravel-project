@@ -55,7 +55,6 @@ class UserController extends Controller
 
 
 
-
     public function register(Request $request) {
         $user = $request->validate([
             'name' => 'required|string|max:100',
@@ -70,11 +69,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-        // return response()->json([
-        //     'message' => 'User Registered Succssfully.',
-        //     'User' => $user
-        // ], 201);
-        return redirect('/login')->with('success', 'User Registered Succssfully.');
+        return redirect('/login')->with('success', 'تم تسجيل المستخدم بنجاح');
     }
 
     public function login(Request $request) {
@@ -87,17 +82,13 @@ class UserController extends Controller
             $request->session()->regenerate();
             $user = User::where('email',$request->email)->first();
             $token = $user->createToken('auth_login')->plainTextToken;
-            // return response()->json([
-            //     'message' => 'User Login Succssfully.',
-            //     'User' => $user,
-            //     'Token' => $token
-            // ], 201);
-            return redirect('/')->with('success', 'User Login Succssfully.')->with('token', $token);
+
+            if(Auth::user()->role === 'admin' or Auth::user()->role === 'superAdmin') {
+                return redirect('/admin')->with('success', 'تم تسجيل الدخول بنجاح')->with('token', $token);
+            }
+            return redirect('/')->with('success', 'تم تسجيل الدخول بنجاح')->with('token', $token);
         }
         else {
-            // return response()->json([
-            //     'message' => 'invalid user or password',
-            // ], 401);
             return back()->withErrors(['login' => 'invalid user or password']);
         }
     }
@@ -106,6 +97,6 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         $request->user()->tokens()->delete();
         // return response()->json(['message' => 'User LogOut Succssfully.']);
-        return redirect('/login');
+        return redirect('/login')->with('success', 'تم تسجيل الخروج بنجاح');
     }
 }

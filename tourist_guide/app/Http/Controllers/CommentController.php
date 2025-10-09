@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    public function index()
+{
+    $comments = Comment::with('user', 'destination')->latest()->paginate(10);
+    return view('admin.comments.index', compact('comments'));
+}
+
     public function store(Request $request, $destination_id)
 {
     $request->validate([
@@ -26,9 +32,7 @@ class CommentController extends Controller
 public function destroy($id)
 {
     $comment = Comment::findOrFail($id);
-
-    // فقط المشرف يستطيع الحذف
-    if (Auth::user()->role === 'admin') {
+    if (Auth::user()->role === 'admin' and 'superAdmin') {
         $comment->delete();
         return redirect()->back()->with('success', 'تم حذف التعليق');
     }

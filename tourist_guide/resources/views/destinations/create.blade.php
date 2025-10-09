@@ -11,9 +11,17 @@
             <input type="text" class="form-control" name="name" id="name" required>
         </div>
         <div class="mb-3">
-            <label for="country" class="form-label">الدولة</label>
-            <input type="text" class="form-control" name="country" id="country" required>
+            <label for="country_id" class="form-label">الدولة</label>
+            <select name="country" id="country_id" class="form-select" required>
+                <option value="">اختر الدولة</option>
+                @foreach($countries as $country)
+                <option value="{{ $country->name }}" {{ (isset($destination) && $destination->country_id == $country->id) ? 'selected' : '' }}>
+                    {{ $country->name }}
+                </option>
+                @endforeach
+            </select>
         </div>
+
         <div class="mb-3">
             <label for="fragment" class="form-label">نبذة</label>
             <textarea class="form-control" name="fragment" id="fragment" required></textarea>

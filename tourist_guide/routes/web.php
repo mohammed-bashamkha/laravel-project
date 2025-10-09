@@ -4,6 +4,7 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
 use App\Models\Destination;
 
@@ -29,18 +30,21 @@ Route::get('/login',function () {return view('login');});
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
 
+Route::middleware(['auth','SuperAdmin'])->group(function (){
+// users routes
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+
 Route::middleware(['auth','AdminMiddleware'])->group(function() {
-    // users routes
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-
-
 // destinations routes
 Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
 Route::post('/destinations', [DestinationController::class, 'store'])->name('destinations.store');
+Route::get('/destinations', [DestinationController::class, 'viewDestinations'])->name('destinations.index');
 Route::get('/user_destinations', [DestinationController::class, 'index'])->name('destinations.my_index');
 Route::get('/destinations/{id}/edit', [DestinationController::class, 'edit'])->name('destinations.edit');
 Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name('destinations.update');
@@ -73,7 +77,6 @@ Route::post('/favorites/remove/{id}', [DestinationController::class, 'removeFrom
 Route::post('/favorites/add/{id}', [DestinationController::class, 'addToFavorites']);
 
 });
-Route::get('/d', [DestinationController::class, 'viewDestinations'])->name('destinations.index');
 
 Route::middleware(['auth', 'AdminMiddleware'])->group(function () {
     Route::get('/admin', function () {
@@ -92,6 +95,15 @@ Route::get('/', function () {
 
 Route::post('/comments/{destination}', [CommentController::class, 'store'])->name('comments.store')->middleware('auth');
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('auth');
+
+Route::post('/ratings/{destination}', [RatingController::class, 'store'])->name('ratings.store')->middleware('auth');
+
+Route::middleware(['auth', 'AdminMiddleware'])->group(function () {
+    Route::get('/admin/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::delete('/admin/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+});
+
+
 
 
 

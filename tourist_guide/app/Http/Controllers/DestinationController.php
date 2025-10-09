@@ -9,6 +9,7 @@ use App\Models\DestinationImage;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Nette\Schema\Expect;
 
 class DestinationController extends Controller
 {
@@ -41,7 +42,8 @@ class DestinationController extends Controller
 
     public function create() {
         $agencies = \App\Models\Agency::all();
-        return view('destinations.create', compact('agencies'));
+        $countries = \App\Models\Country::all();
+        return view('destinations.create', compact('agencies','countries'));
 
     }
 
@@ -49,7 +51,7 @@ class DestinationController extends Controller
         $user_id = Auth::user()->id;
         $destination = Destination::find($id);
 
-        if($destination->user_id != $user_id) {
+        if(Auth::user()->role !== 'superAdmin' and $destination->user_id != $user_id) {
             // return redirect()->route('destinations.index')->with('error',);
             return back()->withErrors('لاتمتلك التصريح لتعديل هذه الوجهة');
         }
@@ -66,12 +68,13 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        return redirect()->route('destinations.update');
+        return redirect()->route('destinations.update',compact('destination'));
     }
     public function edit($id) {
         $destination = Destination::with('agencies')->find($id);
         $agencies = \App\Models\Agency::all();
-        return view('destinations.edit', compact('destination', 'agencies'));
+        $countries = \App\Models\Country::all();
+        return view('destinations.edit', compact('destination', 'agencies','countries'));
 
     }
 
@@ -84,7 +87,7 @@ class DestinationController extends Controller
     public function destroy($id) {
         $user_id = Auth::user()->id;
         $destination = Destination::findOrFail($id);
-        if($destination->user_id != $user_id) {
+        if( Auth::user()->role !== 'superAdmin' and $destination->user_id != $user_id) {
             // return redirect()->route('destinations.index')->with('error',);
             return back()->withErrors('لاتمتلك التصريح لحذف هذه الوجهة');
         }
@@ -97,7 +100,8 @@ class DestinationController extends Controller
 public function viewDestinations()
 {
     $destinations = Destination::with('images')->get();
-    return view('destinations.index', compact('destinations'));
+    $countries = \App\Models\Country::all();
+    return view('destinations.index', compact('destinations','countries'));
     // return view('website.destinations_view' ,compact('destinations'));
 }
 

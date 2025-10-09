@@ -4,35 +4,45 @@
 @section('custom-navbar')
     <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav ms-auto">
+            @if (Auth::user()->role === 'superAdmin')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('users.index') }}">المستخدمين</a>
+            </li>
+            @endif
+            @if(auth()->user()->role === 'admin' or 'superAdmin')
+                <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">لوحة المشرف</a></li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('destinations.index') }}">الوجهات</a>
             </li>
+            @if (Auth::user()->role === 'superAdmin' and 'admin')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('destinations.my_index') }}">وجهاتي</a>
             </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('agencies.index') }}">الوكالات</a>
             </li>
+            @if (Auth::user()->role === 'superAdmin' and 'admin')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('agencies.my_index') }}">وكالاتي</a>
             </li>
-            @auth
+            @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('destinations.favorites') }}">المفضلة ❤️</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        {{ auth()->user()->name }}
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="dropdown-item" type="submit">تسجيل الخروج</button>
-                            </form>
-                        </li>
-                    </ul>
+            @auth
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{{route('users.index')}}" role="button" data-bs-toggle="dropdown-menu">
+                    {{ auth()->user()->name }}
+                </a>
+                <li class="nav-item">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="nav-link">تسجيل الخروج</button>
+                    </form>
                 </li>
+            </li>
             @else
                 <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">تسجيل الدخول</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">إنشاء حساب</a></li>
@@ -56,9 +66,9 @@
     <div class="row">
         @foreach($destinations as $destination)
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 shadow-sm">
                     @if($destination->images->first())
-                        <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" class="card-img-top" alt="صورة وجهة" width="200" height="200">
+                        <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" class="card-img-top" alt="صورة وجهة" height="300">
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $destination->name }}</h5>
