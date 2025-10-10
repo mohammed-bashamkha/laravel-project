@@ -24,4 +24,25 @@ class UserController extends Controller
             'User' => $user,
         ],201);
     }
+
+    public function login(Request $request) {
+        $request->validate([
+            'email' => 'required|email|string|max:255',
+            'password' => 'required|string|min:8'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'The provided credentials are incorrect.'], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'User Logged In Successfully',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ], 200);
+    }
 }
