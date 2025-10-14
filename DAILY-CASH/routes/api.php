@@ -16,6 +16,6 @@ Route::post('login',[UserController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('workers',WorkerController::class);
-    Route::post('logout',[UserController::class,'logout'])->name('logout');
+    Route::delete('logout',[UserController::class,'logout'])->name('logout');
 });
 
