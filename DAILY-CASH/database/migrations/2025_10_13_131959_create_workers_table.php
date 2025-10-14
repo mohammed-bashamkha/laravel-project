@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('daily_wage');
             $table->decimal('monthly_wage');
             $table->string('phone')->nullable();
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
