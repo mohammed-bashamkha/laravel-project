@@ -56,4 +56,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(RevenuesExpenses::class, 'created_by');
     }
+    public function entities()
+    {
+        return $this->hasMany(Entity::class);
+    }
+    public function  jourbalEntries()
+    {
+        return $this->hasMany(JourbalEntry::class);
+    }
+    public function RevenuesExpensesCreated()
+    {
+        return $this->hasMany(RevenuesExpenses::class, 'created_by');
+    }
 }

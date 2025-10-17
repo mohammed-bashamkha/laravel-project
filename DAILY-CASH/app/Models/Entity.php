@@ -22,4 +22,8 @@ class Entity extends Model
     {
         return $this->hasMany(RevenuesExpenses::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -41,4 +41,8 @@ class JourbalEntry extends Model
     {
         return $this->belongsTo(RevenuesExpenses::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
