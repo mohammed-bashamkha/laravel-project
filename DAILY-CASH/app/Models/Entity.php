@@ -6,5 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entity extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'type',
+        'phone',
+        'notes',
+    ];
+
+    /**
+     * العلاقة مع العمليات المالية (الإيرادات والمصروفات)
+     */
+    public function revenuesExpenses()
+    {
+        return $this->hasMany(RevenuesExpenses::class);
+    }
 }
