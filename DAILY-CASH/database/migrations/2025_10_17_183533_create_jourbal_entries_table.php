@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('jourbal_entries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->date('date');
             $table->decimal('amount', 12, 2);
             $table->text('description')->nullable();
