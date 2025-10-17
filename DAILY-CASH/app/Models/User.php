@@ -24,7 +24,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'profile_picture'
     ];
 
     /**
@@ -48,5 +47,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * العمليات المالية التي أنشأها هذا المستخدم
+     */
+    public function revenuesExpenses()
+    {
+        return $this->hasMany(RevenuesExpenses::class, 'created_by');
     }
 }
