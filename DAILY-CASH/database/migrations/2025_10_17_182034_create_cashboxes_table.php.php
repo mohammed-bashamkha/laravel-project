@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cashbox', function (Blueprint $table) {
+        Schema::create('cashboxes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->decimal('total_income', 15, 2)->default(0);
             $table->decimal('total_expense', 15, 2)->default(0);
             $table->decimal('balance', 15, 2)->default(0);

@@ -31,4 +31,7 @@ class Cashbox extends Model
         $cashbox->balance = $cashbox->total_income - $cashbox->total_expense;
         $cashbox->save();
     }
+    public function user() {
+        $this->belongsTo('users');
+    }
 }

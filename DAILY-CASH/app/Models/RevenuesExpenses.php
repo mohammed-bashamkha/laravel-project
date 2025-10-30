@@ -16,6 +16,7 @@ class RevenuesExpenses extends Model
         'description',
         'entity_id',
         'created_by',
+        'created_by',
     ];
 
     /**
@@ -32,5 +33,24 @@ class RevenuesExpenses extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+     /**
+     * 📦 عند إنشاء عملية جديدة (دخل أو صرف) يتم تحديث الخزينة تلقائيًا
+     */
+    protected static function booted()
+    {
+        static::created(function ($record) {
+            \App\Models\Cashbox::updateBalance($record->type, $record->amount);
+        });
+
+        static::deleted(function ($record) {
+            // عكس العملية عند الحذف
+            if ($record->type === 'income') {
+                \App\Models\Cashbox::updateBalance('expense', $record->amount);
+            } else {
+                \App\Models\Cashbox::updateBalance('income', $record->amount);
+            }
+        });
     }
 }
