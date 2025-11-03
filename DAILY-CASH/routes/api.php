@@ -17,8 +17,10 @@ Route::post('login',[UserController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('cashbox',CashBoxController::class);
+    Route::put('/cashbox-update', [CashboxController::class, 'update'])->name('cashbox-update');
     Route::apiResource('entities', EntityController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('revenues-expenses', RevenuesExpensesController::class);
+    Route::post('delete-my-account',[UserController::class,'deleteMyAccount'])->name('delete-my-account');
     Route::post('logout',[UserController::class,'logout'])->name('logout');
 });

@@ -6,13 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Testing\Fluent\Concerns\Has;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable ,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     /**
@@ -41,6 +39,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    protected $appends = ['avatar_url'];
     protected function casts(): array
     {
         return [
@@ -49,28 +48,9 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * العمليات المالية التي أنشأها هذا المستخدم
-     */
-    public function revenuesExpenses()
+    public function getAvatarUrlAttribute(): string
     {
-        return $this->hasMany(RevenuesExpenses::class, 'created_by');
-    }
-    public function entities()
-    {
-        return $this->hasMany(Entity::class);
-    }
-    public function  jourbalEntries()
-    {
-        return $this->hasMany(JourbalEntry::class);
-    }
-    public function RevenuesExpensesCreated()
-    {
-        return $this->hasMany(RevenuesExpenses::class, 'created_by');
-    }
-
-    public function cashbox()
-    {
-        return $this->hasOne(Cashbox::class);
+        
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim( $this->email )));
     }
 }

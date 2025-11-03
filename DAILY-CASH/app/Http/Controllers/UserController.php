@@ -48,8 +48,27 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request) {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'User Logged Out Successfully'], 200);
+    public function logout(Request $request)
+{
+    $user = $request->user();
+
+    if ($user && $user->currentAccessToken()) {
+        $user->currentAccessToken()->delete();
+        return response()->json(['message' => 'logged out successfully'], 200);
+    }
+
+    return response()->json(['message' => 'The currentAccessToken is Undefiend'], 401);
+    }
+
+    public function deleteMyAccount(Request $request) {
+        $user = $request->user();
+
+        if ($user) {
+            $user->tokens()->delete(); // حذف جميع التوكنات المرتبطة بالمستخدم
+            $user->delete(); // حذف حساب المستخدم
+            return response()->json(['message' => 'Account deleted successfully'], 200);
+        }
+
+        return response()->json(['message' => 'User not found'], 404);
     }
 }
