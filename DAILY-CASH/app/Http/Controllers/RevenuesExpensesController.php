@@ -68,4 +68,22 @@ class RevenuesExpensesController extends Controller
             return response()->json(['message' => 'Deleted successfully']);
         }
     }
+
+    public function getIncomes()
+    {
+        $user_id = Auth::user()->id;
+        $revenuesExpenses = RevenuesExpenses::where('created_by', $user_id)
+            ->where('type', 'income')
+            ->get();
+        return response()->json($revenuesExpenses);
+    }
+
+    public function getExpenses()
+    {
+        $user_id = Auth::user()->id;
+        $revenuesExpenses = RevenuesExpenses::where('created_by', $user_id)
+            ->where('type', 'expense')
+            ->get();
+        return response()->json($revenuesExpenses);
+    }
 }
