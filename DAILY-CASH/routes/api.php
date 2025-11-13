@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('users', UserController::class);
     Route::apiResource('revenues-expenses', RevenuesExpensesController::class);
     Route::apiResource('journal-entries', JourbalEntryController::class);
+    Route::get('get-incomes', [RevenuesExpensesController::class, 'getIncomes'])->name('get-incomes');
+    Route::get('get-expenses', [RevenuesExpensesController::class, 'getExpenses'])->name('get-expenses');
     Route::post('delete-my-account',[UserController::class,'deleteMyAccount'])->name('delete-my-account');
     Route::post('logout',[UserController::class,'logout'])->name('logout');
 });
