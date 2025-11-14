@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('get-incomes', [RevenuesExpensesController::class, 'getIncomes'])->name('get-incomes');
     // عرض كل المصروفات
     Route::get('get-expenses', [RevenuesExpensesController::class, 'getExpenses'])->name('get-expenses');
+    // بحث في الايرادات والمصروفات
+    Route::get('/revenues-expenses/search', [RevenuesExpensesController::class, 'RevenuesExpensesSearch']);
     // الراوتر الخاص بحذف حسابي
     Route::post('delete-my-account',[UserController::class,'deleteMyAccount'])->name('delete-my-account');
     // الراوتر الخاص بتسجيل الخروج

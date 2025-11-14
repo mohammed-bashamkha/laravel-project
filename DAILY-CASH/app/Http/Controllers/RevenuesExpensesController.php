@@ -69,6 +69,61 @@ class RevenuesExpensesController extends Controller
         }
     }
 
+    public function RevenuesExpensesSearch(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        if($request->has('created_by') && $request->created_by != $user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        $query = RevenuesExpenses::query();
+
+        // نوع العملية (income / expense)
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // التاريخ المحدد
+        if ($request->has('date')) {
+            $query->whereDate('date', $request->date);
+        }
+
+        // البحث بين تاريخين
+        if ($request->has(['start_date', 'end_date'])) {
+            $query->whereBetween('date', [$request->start_date, $request->end_date]);
+        }
+
+        // البحث بالنص (description)
+        if ($request->has('keyword')) {
+            $query->where('description', 'like', '%' . $request->keyword . '%');
+        }
+
+        // البحث حسب الكيان
+        if ($request->has('entity_id')) {
+            $query->where('entity_id', $request->entity_id);
+        }
+
+        // المبلغ أكبر من
+        if ($request->has('min_amount')) {
+            $query->where('amount', '>=', $request->min_amount);
+        }
+
+        // المبلغ أصغر من
+        if ($request->has('max_amount')) {
+            $query->where('amount', '<=', $request->max_amount);
+        }
+
+        // المستخدم الذي أضاف العملية
+        if ($request->has('created_by')) {
+            $query->where('created_by', $request->created_by);
+        }
+
+        // ترتيب تنازلي حسب التاريخ
+        $query->orderBy('date', 'desc');
+
+        return response()->json($query->get());
+    }
+
+
     public function getIncomes()
     {
         $user_id = Auth::user()->id;
