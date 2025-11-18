@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entity;
 use App\Models\RevenuesExpenses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -141,4 +142,45 @@ class RevenuesExpensesController extends Controller
             ->get();
         return response()->json($revenuesExpenses);
     }
+
+    public function getEntityStatement($entity_id)
+    {
+        // نبحث عن الكيان (عامل / مشروع)
+        $entity = Entity::findOrFail($entity_id);
+
+        // جميع العمليات المرتبطة بالكيان
+        $transactions = RevenuesExpenses::where('entity_id', $entity_id)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // حساب الإجماليات
+        $total_income = $transactions->where('type', 'income')->sum('amount');
+        $total_expense = $transactions->where('type', 'expense')->sum('amount');
+        $balance = $total_income - $total_expense;
+
+        return response()->json([
+            'success' => true,
+            'entity' => [
+                'id' => $entity->id,
+                'name' => $entity->name,
+                'type' => $entity->type,
+            ],
+            'totals' => [
+                'total_income' => $total_income,
+                'total_expense' => $total_expense,
+                'balance' => $balance,
+            ],
+            'transactions' => $transactions
+        ]);
+    }
+
+    public function getLast5states() {
+        $user_id = Auth::user()->id;
+        $transactions = RevenuesExpenses::where('created_by', $user_id)
+            ->orderBy('date', 'desc')
+            ->take(5)
+            ->get();
+        return response()->json($transactions);
+    }
+
 }

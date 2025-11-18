@@ -61,4 +61,31 @@ class EntityController extends Controller
         $entity->delete();
         return response()->json(['message' => 'Entity deleted successfully']);
     }
+
+    public function getProjects() {
+        $user_id = Auth::user()->id;
+        $projects = Entity::where('user_id', $user_id)->where('type', 'project')->get();
+        return response()->json($projects);
+    }
+
+    public function getWorkers() {
+        $user_id = Auth::user()->id;
+        $workers = Entity::where('user_id', $user_id)->where('type', 'worker')->get();
+        return response()->json($workers);
+    }
+
+    public function entitySearch(Request $request) {
+        $user_id = Auth::user()->id;
+        $query = Entity::where('user_id', $user_id);
+
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+        if ($request->has('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
+        $entities = $query->get();
+        return response()->json($entities);
+    }
 }
