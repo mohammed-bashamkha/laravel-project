@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/get-workers', [EntityController::class, 'getWorkers'])->name('get-workers');
     // الراوتر الخاص بالمستخدمين
     Route::apiResource('users', UserController::class);
+    Route::get('expense/search',[RevenuesExpensesController::class, 'expenseSearch'])->name('expense.search');
+    Route::get('income/search', [RevenuesExpensesController::class, 'incomeSearch'])->name('income.search');
      // بحث في الايرادات والمصروفات
     Route::get('/revenues-expenses/search', [RevenuesExpensesController::class, 'RevenuesExpensesSearch']);
     // جلب اخر خمس عمليات ايردات / مصروفات

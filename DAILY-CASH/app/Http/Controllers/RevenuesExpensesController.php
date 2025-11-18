@@ -124,6 +124,51 @@ class RevenuesExpensesController extends Controller
         return response()->json($query->get());
     }
 
+    public function incomeSearch(Request $request)
+    {
+        $query = RevenuesExpenses::query()->where('type', 'income');
+
+        // البحث في وصف العملية + اسم العامل/المشروع + المبلغ + التاريخ
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+
+            $query->where(function($q) use ($keyword) {
+                $q->where('description', 'like', "%$keyword%")
+                ->orWhere('amount', 'like', "%$keyword%")
+                ->orWhere('date', 'like', "%$keyword%")
+                ->orWhereHas('entity', function($qe) use ($keyword) {
+                    $qe->where('name', 'like', "%$keyword%");
+                });
+            });
+        }
+
+        $results = $query->with('entity')->orderBy('date', 'desc')->get();
+
+        return response()->json($results);
+    }
+    
+    public function expenseSearch(Request $request)
+    {
+        $query = RevenuesExpenses::query()->where('type', 'expense');
+
+        // البحث في وصف العملية + اسم العامل/المشروع + المبلغ + التاريخ
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+
+            $query->where(function($q) use ($keyword) {
+                $q->where('description', 'like', "%$keyword%")
+                ->orWhere('amount', 'like', "%$keyword%")
+                ->orWhere('date', 'like', "%$keyword%")
+                ->orWhereHas('entity', function($qe) use ($keyword) {
+                    $qe->where('name', 'like', "%$keyword%");
+                });
+            });
+        }
+
+        $results = $query->with('entity')->orderBy('date', 'desc')->get();
+
+        return response()->json($results);
+    }
 
     public function getIncomes()
     {
