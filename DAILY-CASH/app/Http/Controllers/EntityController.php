@@ -74,18 +74,35 @@ class EntityController extends Controller
         return response()->json($workers);
     }
 
-    public function entitySearch(Request $request) {
+    public function entitySearch(Request $request)
+    {
         $user_id = Auth::user()->id;
+
         $query = Entity::where('user_id', $user_id);
 
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
-        }
-        if ($request->has('type')) {
-            $query->where('type', $request->input('type'));
+        // بحث عام باستخدام keyword
+        if ($request->filled('keyword')) {
+            $keyword = '%' . $request->keyword . '%';
+
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', $keyword)
+                ->orWhere('type', 'like', $keyword)
+                ->orWhere('phone', 'like', $keyword) // إذا عندك وصف
+                ->orWhere('notes', 'like', $keyword);       // إذا عندك رقم هاتف
+            });
         }
 
-        $entities = $query->get();
-        return response()->json($entities);
+        // فلترة حسب الاسم
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // فلترة حسب النوع
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        return response()->json($query->get());
     }
+
 }

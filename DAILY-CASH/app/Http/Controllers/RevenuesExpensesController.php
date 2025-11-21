@@ -6,6 +6,7 @@ use App\Models\Entity;
 use App\Models\RevenuesExpenses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Omaralalwi\Gpdf\Facade\Gpdf;
 
 class RevenuesExpensesController extends Controller
 {
@@ -73,48 +74,56 @@ class RevenuesExpensesController extends Controller
     public function RevenuesExpensesSearch(Request $request)
     {
         $user_id = Auth::user()->id;
-        if($request->has('created_by') && $request->created_by != $user_id) {
+
+        if ($request->has('created_by') && $request->created_by != $user_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
+
         $query = RevenuesExpenses::query();
 
-        // نوع العملية (income / expense)
-        if ($request->has('type')) {
+        // فلترة حسب النوع
+        if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
-        // التاريخ المحدد
-        if ($request->has('date')) {
+        // تاريخ محدد
+        if ($request->filled('date')) {
             $query->whereDate('date', $request->date);
         }
 
-        // البحث بين تاريخين
-        if ($request->has(['start_date', 'end_date'])) {
+        // بين تاريخين
+        if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('date', [$request->start_date, $request->end_date]);
         }
 
-        // البحث بالنص (description)
-        if ($request->has('keyword')) {
-            $query->where('description', 'like', '%' . $request->keyword . '%');
+        // البحث بالكلمة keyword مع OR على أكثر من عمود
+        if ($request->filled('keyword')) {
+            $keyword = '%' . $request->keyword . '%';
+
+            $query->where(function ($q) use ($keyword) {
+                $q->where('description', 'like', $keyword)
+                ->orWhere('amount', 'like', $keyword)
+                ->orWhere('date', 'like', $keyword)
+                ->orWhere('entity_id', 'like', $keyword);
+            });
         }
 
-        // البحث حسب الكيان
-        if ($request->has('entity_id')) {
+        // فلترة حسب الكيان
+        if ($request->filled('entity_id')) {
             $query->where('entity_id', $request->entity_id);
         }
 
-        // المبلغ أكبر من
-        if ($request->has('min_amount')) {
+        // الفلترة حسب المبلغ
+        if ($request->filled('min_amount')) {
             $query->where('amount', '>=', $request->min_amount);
         }
 
-        // المبلغ أصغر من
-        if ($request->has('max_amount')) {
+        if ($request->filled('max_amount')) {
             $query->where('amount', '<=', $request->max_amount);
         }
 
-        // المستخدم الذي أضاف العملية
-        if ($request->has('created_by')) {
+        // المستخدم المُنشئ
+        if ($request->filled('created_by')) {
             $query->where('created_by', $request->created_by);
         }
 
@@ -146,7 +155,7 @@ class RevenuesExpensesController extends Controller
 
         return response()->json($results);
     }
-    
+
     public function expenseSearch(Request $request)
     {
         $query = RevenuesExpenses::query()->where('type', 'expense');
@@ -203,20 +212,41 @@ class RevenuesExpensesController extends Controller
         $total_expense = $transactions->where('type', 'expense')->sum('amount');
         $balance = $total_income - $total_expense;
 
-        return response()->json([
-            'success' => true,
-            'entity' => [
-                'id' => $entity->id,
-                'name' => $entity->name,
-                'type' => $entity->type,
-            ],
-            'totals' => [
-                'total_income' => $total_income,
-                'total_expense' => $total_expense,
-                'balance' => $balance,
-            ],
-            'transactions' => $transactions
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'entity' => [
+        //         'id' => $entity->id,
+        //         'name' => $entity->name,
+        //         'type' => $entity->type,
+        //     ],
+        //     'totals' => [
+        //         'total_income' => $total_income,
+        //         'total_expense' => $total_expense,
+        //         'balance' => $balance,
+        //     ],
+        //     'transactions' => $transactions
+        // ]);
+        $html = view('pdf.entity-statement', [
+        'entity'         => $entity,
+        'transactions'   => $transactions,
+        'total_income'   => $total_income,
+        'total_expense'  => $total_expense,
+        'balance'        => $balance
+    ])->render();
+
+        //  // 5. توليد PDF كـ string
+        $pdfContent = Gpdf::generate($html);
+
+        // // 6. إرجاعه كتحميل (Download)
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="statement-'.$entity->name.'.pdf"')
+            ->header('Content-Length', strlen($pdfContent));
+
+        // 5. توليد PDF بالطريقة الرسمية عبر الـ Facade
+        // return Gpdf::generateWithStream( $html,"statement-{$entity->id}.pdf",true  // عرض مباشر
+        // );
+        // return $html;
     }
 
     public function getLast5states() {

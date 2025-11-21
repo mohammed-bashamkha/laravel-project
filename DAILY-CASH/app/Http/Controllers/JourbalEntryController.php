@@ -33,28 +33,35 @@ class JourbalEntryController extends Controller
         return response()->json($entry, 201);
     }
 
-    public function update(Request $request, $id) {
-        $user_id = Auth::user();
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
         $entry = JourbalEntry::findOrFail($id);
-        if ($entry->user_id !== $user_id->id) {
+
+        // التحقق من صلاحية المستخدم
+        if ($entry->user_id !== $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Validate the request data
+        // التحقق من البيانات
         $data = $request->validate([
-            'date' => 'somtimes|date',
+            'date' => 'sometimes|date',
             'amount' => 'sometimes|numeric',
             'description' => 'sometimes|string|max:255',
-            'debit_entity_id' => 'required|exists:entities,id',
-            'credit_entity_id' => 'required|exists:entities,id',
-            'revenue_expense_id' => 'nullable|exists:revenues_expenses,id',
+            'debit_entity_id' => 'sometimes|required|exists:entities,id',
+            'credit_entity_id' => 'sometimes|required|exists:entities,id',
+            'revenue_expense_id' => 'sometimes|nullable|exists:revenues_expenses,id',
         ]);
-        $data['user_id'] = $user_id;
-        // Update the journal entry
-        $entry = JourbalEntry::update($data);
+
+        // تعديل user_id
+        $data['user_id'] = $user->id;
+
+        // تحديث السجل
+        $entry->update($data);
 
         return response()->json($entry, 200);
     }
+
     public function show($id) {
         $user = Auth::user();
         $entry = JourbalEntry::findOrFail($id);
@@ -73,4 +80,37 @@ class JourbalEntryController extends Controller
         $entry->delete();
         return response()->json(['message' => 'Journal entry deleted successfully'], 200);
     }
+
+    public function journalEntrySearch(Request $request)
+    {
+        $user_id = Auth::id();
+
+        // منع الوصول لعمليات شخص آخر
+        if ($request->filled('created_by') && $request->created_by != $user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // بداية الاستعلام
+        $query = JourbalEntry::where('user_id', $user_id);
+
+        // كلمة البحث العامة
+        if ($request->filled('keyword')) {
+            $keyword = '%' . $request->keyword . '%';
+
+            $query->where(function($q) use ($keyword) {
+                $q->where('date', 'like', $keyword)
+                ->orWhere('description', 'like', $keyword)
+                ->orWhere('amount', 'like', $keyword)
+                ->orWhere('debit_entity_id', 'like', $keyword)
+                ->orWhere('credit_entity_id', 'like', $keyword)
+                ->orWhere('revenue_expense_id', 'like', $keyword);
+            });
+        }
+
+        // تحميل العلاقات + ترتيب حسب التاريخ
+        $results = $query->orderBy('date', 'desc')->get();
+
+        return response()->json($results);
+    }
+
 }

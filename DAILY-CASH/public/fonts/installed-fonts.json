@@ -102,9 +102,9 @@
         "bold_italic": "MarkaziText-BoldItalic"
     },
     "tajawal": {
-        "normal": "D:\\xampp_new\\htdocs\\laravel-project\\DAILY-CASH\\public\\vendor\\gpdf\\fonts\/Tajawal-Normal",
-        "bold": "tajawal_bold_597bfd66dc9c3f96c91e751ba9e9d4f4",
-        "italic": "D:\\xampp_new\\htdocs\\laravel-project\\DAILY-CASH\\public\\vendor\\gpdf\\fonts\/Tajawal-Italic",
-        "bold_italic": "D:\\xampp_new\\htdocs\\laravel-project\\DAILY-CASH\\public\\vendor\\gpdf\\fonts\/Tajawal-BoldItalic"
+        "normal": "Tajawal-Normal",
+        "bold": "Tajawal-Bold",
+        "italic": "Tajawal-Italic",
+        "bold_italic": "Tajawal-BoldItalic"
     }
 }

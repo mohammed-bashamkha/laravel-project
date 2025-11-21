@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function(){
     // الراوتر الخاص بالايرادات والمصروفات
     Route::apiResource('revenues-expenses', RevenuesExpensesController::class);
     // الراوتر الخاص بالقيود المحاسبية
+    Route::get('/journal-entries/search', [JourbalEntryController::class, 'journalEntrySearch']);
     Route::apiResource('journal-entries', JourbalEntryController::class);
     // عرض كل الايرادات
     Route::get('get-incomes', [RevenuesExpensesController::class, 'getIncomes'])->name('get-incomes');
