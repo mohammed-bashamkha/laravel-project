@@ -62,7 +62,7 @@
         .card {
             flex: 1 1 30%;
             background-color: #f3f4f6;
-            padding: 15px;
+            padding: 5px;
             border-radius: 8px;
             text-align: center;
             margin: 0 5px;
@@ -149,9 +149,9 @@
             <div class="text">
                 <h2>كشف حساب</h2>
                 @if ($entity->type == 'worker')
-                    <p>{{ $entity->name }}أسم العامل: </p>
+                    <p>أسم العامل: {{ $entity->name }}</p>
                 @else
-                    <p>{{ $entity->name }}أسم المشروع: </p>
+                    <p>أسم المشروع: {{ $entity->name }}</p>
                 @endif
             </div>
             <div class="company">
@@ -178,7 +178,7 @@
         </div>
 
         <!-- Table -->
-        <h3 style="margin-bottom: 10px;">تفاصيل العمليات</h3>
+        <h3 style="margin-bottom: 10px; direction: rtl;">تفاصيل العمليات</h3>
         <table>
             <thead>
                 <tr>
