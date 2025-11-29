@@ -237,15 +237,18 @@ class RevenuesExpensesController extends Controller
         //  // 5. توليد PDF كـ string
         $pdfContent = Gpdf::generate($html);
 
+        // ياحمزة ذي الدالة الي تشتغل عندي
         // // 6. إرجاعه كتحميل (Download)
         return response($pdfContent)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="statement-'.$entity->name.'.pdf"')
             ->header('Content-Length', strlen($pdfContent));
 
+        // 
         // 5. توليد PDF بالطريقة الرسمية عبر الـ Facade
         // return Gpdf::generateWithStream( $html,"statement-{$entity->id}.pdf",true  // عرض مباشر
         // );
+        // جرب سوي ريتورن للصفحة وحط الرابط في المتصفح وتأكد اذا الخطوط تمام في الصفحة
         // return $html;
     }
 
