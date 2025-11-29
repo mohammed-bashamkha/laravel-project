@@ -5,9 +5,15 @@
     <title>كشف حساب</title>
     <style>
         /* خطوط وألوان عامة */
+        @font-face{
+            font-family: 'Tajawal';
+            src: url("{{ storage_path('/public/fonts/Tajawal-Normal.ttf') }}") format('ttf');
+            font-weight: normal;
+            /* font-style:italic;  */
+        }
         body {
 
-            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-family: 'Tajawal';
             margin: 0;
             padding: 20px;
             background-color: #ffffff;
